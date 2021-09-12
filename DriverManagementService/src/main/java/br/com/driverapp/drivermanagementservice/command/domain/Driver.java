@@ -3,10 +3,10 @@ package br.com.driverapp.drivermanagementservice.command.domain;
 import br.com.driverapp.drivermanagementservice.command.CreateDriverCommand;
 import br.com.driverapp.drivermanagementservice.command.event.DriverCreatedEvent;
 import br.com.driverapp.drivermanagementservice.command.rest.model.CarModel;
-import br.com.driverapp.drivermanagementservice.command.rest.model.DriverModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
@@ -38,7 +38,7 @@ public class Driver {
     @CommandHandler
     public Driver(CreateDriverCommand createDriverCommand) {
         if (createDriverCommand.getId() != null) {
-            throw new IllegalArgumentException("The driver already exists");
+            throw new IllegalArgumentException("The driver id must be null");
         }
         if (createDriverCommand.getAge() < 21) {
             throw new IllegalArgumentException("The minimum age is 21");

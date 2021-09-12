@@ -2,6 +2,7 @@ package br.com.driverapp.drivermanagementservice.command.rest;
 
 import br.com.driverapp.drivermanagementservice.command.CreateDriverCommand;
 import br.com.driverapp.drivermanagementservice.command.rest.model.DriverModel;
+import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,17 +24,19 @@ public class DriverController {
     private QueryGateway queryGateway;
 
     @PostMapping("/drivers")
-    public ResponseEntity<String> createDriver(@RequestBody DriverModel driverModel) {
+    public CompletableFuture<ResponseEntity<String>> createDriver(@RequestBody DriverModel driverModel) {
 
-        CompletableFuture<String> result = commandGateway.send(new CreateDriverCommand(
-                driverModel.getId(),
-                driverModel.getName(),
-                driverModel.getAge(),
-                driverModel.getLicenseNumber(),
-                driverModel.getCar()
-        ));
+        CreateDriverCommand command = new CreateDriverCommand(
+            driverModel.getId(),
+            driverModel.getName(),
+            driverModel.getAge(),
+            driverModel.getLicenseNumber(),
+            driverModel.getCar()
+        );
 
-        return ResponseEntity.ok("The driver will be created");
+        return commandGateway.send(command)
+            .thenApply(res -> ResponseEntity.ok(String.format("Driver %s created", res)))
+            .exceptionally(ex -> ResponseEntity.badRequest().body(ex.getCause().getMessage()));
     }
 
     @GetMapping("/drivers")
