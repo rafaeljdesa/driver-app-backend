@@ -63,7 +63,7 @@ public class Driver {
 
     private Car from(CarModel carModel) {
         if (carModel.getId() != null) {
-            throw new IllegalArgumentException("The car already exists");
+            throw new IllegalArgumentException("The car id must be null");
         }
         return new Car(
             UUID.randomUUID().toString(),

@@ -25,4 +25,7 @@ hs_err_pid*
 
 .idea/
 
+data/
 AxonServer/AxonServer-4.5.6/data/
+AxonServer/AxonServer-4.5.6/.vscode/
+AxonServer/AxonServer-4.5.6/AxonIQ.pid
