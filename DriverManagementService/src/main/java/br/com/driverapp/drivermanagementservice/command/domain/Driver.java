@@ -1,6 +1,7 @@
 package br.com.driverapp.drivermanagementservice.command.domain;
 
 import br.com.driverapp.drivermanagementservice.command.CreateDriverCommand;
+import br.com.driverapp.drivermanagementservice.command.RequestDriverCommand;
 import br.com.driverapp.drivermanagementservice.command.event.DriverCreatedEvent;
 import br.com.driverapp.drivermanagementservice.command.rest.model.CarModel;
 import lombok.AllArgsConstructor;
@@ -50,6 +51,11 @@ public class Driver {
             createDriverCommand.getLicenseNumber(),
             from(createDriverCommand.getCar())
         ));
+    }
+
+    @CommandHandler
+    public void handle(RequestDriverCommand requestDriverCommand) {
+
     }
 
     @EventSourcingHandler
