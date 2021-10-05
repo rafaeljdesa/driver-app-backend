@@ -1,16 +1,14 @@
-package br.com.driverapp.racingservice.command;
+package br.com.driverapp.racingservice.command.rest.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateDriverRacingCommand {
+public class AcceptRacingModel {
 
-    @TargetAggregateIdentifier
     private String racingId;
     private String driverId;
 

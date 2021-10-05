@@ -4,9 +4,12 @@ import br.com.driverapp.racingservice.command.domain.RacingStatus;
 import br.com.driverapp.racingservice.command.events.RacingAcceptedEvent;
 import br.com.driverapp.racingservice.command.events.RacingCanceledEvent;
 import br.com.driverapp.racingservice.command.events.RacingRequestedEvent;
+import br.com.driverapp.racingservice.command.rest.model.RacingModel;
 import br.com.driverapp.racingservice.query.domain.RacingEntity;
 import br.com.driverapp.racingservice.query.domain.RacingsRepository;
+import br.com.driverapp.racingservice.query.events.FindAvailableRacingQuery;
 import org.axonframework.eventhandling.EventHandler;
+import org.axonframework.queryhandling.QueryUpdateEmitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -23,12 +26,25 @@ public class RacingEventHandler {
     @Autowired
     private RacingsRepository racingsRepository;
 
+    @Autowired
+    private QueryUpdateEmitter queryUpdateEmitter;
+
     @EventHandler
     public void on(RacingRequestedEvent racingRequestedEvent) {
         LOGGER.info("RacingEventHandler -> RacingRequestedEvent");
         RacingEntity racingEntity = new RacingEntity();
         BeanUtils.copyProperties(racingRequestedEvent, racingEntity);
         racingsRepository.save(racingEntity);
+
+        // Updating driver's subscription query
+        LOGGER.info("RacingEventHandler -> Updating subscription query");
+        RacingModel racingModel = new RacingModel(
+            racingEntity.getRacingId(),
+            racingEntity.getPassengerId(),
+            racingEntity.getStartLocation(),
+            racingEntity.getEndLocation()
+        );
+        queryUpdateEmitter.emit(FindAvailableRacingQuery.class, query -> true, racingModel);
     }
 
     @EventHandler

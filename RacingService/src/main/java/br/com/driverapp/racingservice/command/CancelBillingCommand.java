@@ -1,4 +1,4 @@
-package br.com.driverapp.drivermanagementservice.command;
+package br.com.driverapp.racingservice.command;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +8,7 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestDriverCommand {
+public class CancelBillingCommand {
 
     @TargetAggregateIdentifier
     private String racingId;

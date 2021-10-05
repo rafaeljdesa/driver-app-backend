@@ -1,13 +1,11 @@
 package br.com.driverapp.drivermanagementservice.command.domain;
 
 import br.com.driverapp.drivermanagementservice.command.CreateDriverCommand;
-import br.com.driverapp.drivermanagementservice.command.RequestDriverCommand;
 import br.com.driverapp.drivermanagementservice.command.event.DriverCreatedEvent;
 import br.com.driverapp.drivermanagementservice.command.rest.model.CarModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
@@ -51,11 +49,6 @@ public class Driver {
             createDriverCommand.getLicenseNumber(),
             from(createDriverCommand.getCar())
         ));
-    }
-
-    @CommandHandler
-    public void handle(RequestDriverCommand requestDriverCommand) {
-
     }
 
     @EventSourcingHandler

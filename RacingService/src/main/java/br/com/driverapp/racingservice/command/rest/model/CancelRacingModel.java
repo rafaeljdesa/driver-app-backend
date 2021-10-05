@@ -1,4 +1,4 @@
-package br.com.driverapp.racingservice.command.events;
+package br.com.driverapp.racingservice.command.rest.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RacingDriverUpdatedEvent {
-
-    private String driverId;
-
+public class CancelRacingModel {
+    private String racingId;
 }

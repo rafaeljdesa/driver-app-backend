@@ -35,6 +35,7 @@ public class DriverQueryHandler {
 
     private DriverQueryModel from(DriverEntity driver) {
         return new DriverQueryModel(
+            driver.getId(),
             driver.getName(),
             driver.getAge(),
             driver.getLicenseNumber(),

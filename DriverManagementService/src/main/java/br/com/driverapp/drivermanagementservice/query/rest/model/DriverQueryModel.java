@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DriverQueryModel {
 
+    private String id;
+
     private String name;
 
     private int age;

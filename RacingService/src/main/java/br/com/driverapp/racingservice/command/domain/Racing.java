@@ -1,26 +1,23 @@
 package br.com.driverapp.racingservice.command.domain;
 
-import br.com.driverapp.racingservice.command.BillingCommand;
-import br.com.driverapp.racingservice.command.CancelRacingCommand;
-import br.com.driverapp.racingservice.command.RequestRacingCommand;
-import br.com.driverapp.racingservice.command.UpdateDriverRacingCommand;
-import br.com.driverapp.racingservice.command.events.RacingDriverUpdatedEvent;
+import br.com.driverapp.racingservice.command.*;
+import br.com.driverapp.racingservice.command.events.RacingAcceptedEvent;
 import br.com.driverapp.racingservice.command.events.RacingCanceledEvent;
 import br.com.driverapp.racingservice.command.events.RacingRequestedEvent;
-import br.com.driverapp.racingservice.query.RacingEventHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
-import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
 @Data
 @AllArgsConstructor
@@ -53,10 +50,11 @@ public class Racing {
     }
 
     @CommandHandler
-    public void handle(UpdateDriverRacingCommand updateDriverCommand) {
-        LOGGER.info("RacingAggregate -> UpdateDriverRacingCommand");
-        apply(new RacingDriverUpdatedEvent(
-            updateDriverCommand.getDriverId()
+    public void handle(AcceptRacingCommand acceptRacingCommand) {
+        LOGGER.info("RacingAggregate -> AcceptRacingCommand");
+        apply(new RacingAcceptedEvent(
+            acceptRacingCommand.getRacingId(),
+            acceptRacingCommand.getDriverId()
         ));
     }
 
@@ -73,6 +71,11 @@ public class Racing {
         LOGGER.info("RacingAggregate -> BillingCommand");
     }
 
+    @CommandHandler
+    public void handle(CancelBillingCommand cancelBillingCommand) {
+        LOGGER.info("RacingAggregate -> CancelBillingCommand");
+    }
+
     @EventSourcingHandler
     public void on(RacingRequestedEvent racingRequestedEvent) {
         LOGGER.info("RacingAggregate -> RacingRequestedEvent");
@@ -84,9 +87,9 @@ public class Racing {
     }
 
     @EventSourcingHandler
-    public void on(RacingDriverUpdatedEvent driverUpdatedEvent) {
-        LOGGER.info("RacingAggregate -> RacingDriverUpdatedEvent");
-        this.driverId = driverUpdatedEvent.getDriverId();
+    public void on(RacingAcceptedEvent racingAcceptedEvent) {
+        LOGGER.info("RacingAggregate -> RacingAcceptedEvent");
+        this.driverId = racingAcceptedEvent.getDriverId();
     }
 
     @EventSourcingHandler
