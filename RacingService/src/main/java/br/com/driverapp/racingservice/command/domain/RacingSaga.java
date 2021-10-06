@@ -2,7 +2,6 @@ package br.com.driverapp.racingservice.command.domain;
 
 import br.com.driverapp.racingservice.command.BillingCommand;
 import br.com.driverapp.racingservice.command.CancelBillingCommand;
-import br.com.driverapp.racingservice.command.CancelRacingCommand;
 import br.com.driverapp.racingservice.command.events.RacingCanceledEvent;
 import br.com.driverapp.racingservice.command.events.RacingRequestedEvent;
 import org.axonframework.commandhandling.gateway.CommandGateway;
@@ -15,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Saga
 public class RacingSaga {
-
-    public RacingSaga() { }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RacingSaga.class);
 

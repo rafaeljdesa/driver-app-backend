@@ -4,6 +4,7 @@ import br.com.driverapp.racingservice.command.domain.RacingStatus;
 import br.com.driverapp.racingservice.command.events.RacingAcceptedEvent;
 import br.com.driverapp.racingservice.command.events.RacingCanceledEvent;
 import br.com.driverapp.racingservice.command.events.RacingRequestedEvent;
+import br.com.driverapp.racingservice.command.events.RacingStartedEvent;
 import br.com.driverapp.racingservice.command.rest.model.RacingModel;
 import br.com.driverapp.racingservice.query.domain.RacingEntity;
 import br.com.driverapp.racingservice.query.domain.RacingsRepository;
@@ -65,6 +66,17 @@ public class RacingEventHandler {
         if (optionalRacing.isPresent()) {
             RacingEntity racingEntity = optionalRacing.get();
             racingEntity.setStatus(RacingStatus.CANCELED);
+            racingsRepository.save(racingEntity);
+        }
+    }
+
+    @EventHandler
+    public void on(RacingStartedEvent racingStartedEvent) {
+        LOGGER.info("RacingEventHandler -> RacingStartedEvent");
+        Optional<RacingEntity> optionalRacing = racingsRepository.findById(racingStartedEvent.getRacingId());
+        if (optionalRacing.isPresent()) {
+            RacingEntity racingEntity = optionalRacing.get();
+            racingEntity.setStatus(RacingStatus.STARTED);
             racingsRepository.save(racingEntity);
         }
     }

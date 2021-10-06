@@ -28,6 +28,6 @@ eureka:
 # Possible values for these keys are `default`, `xstream`, `java`, and `jackson`.
 axon:
   serializer:
-    general: jackson
-    events: jackson
+    general: xstream
+    events: xstream
     messages: xstream

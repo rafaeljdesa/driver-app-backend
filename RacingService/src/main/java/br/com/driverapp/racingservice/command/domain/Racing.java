@@ -4,6 +4,7 @@ import br.com.driverapp.racingservice.command.*;
 import br.com.driverapp.racingservice.command.events.RacingAcceptedEvent;
 import br.com.driverapp.racingservice.command.events.RacingCanceledEvent;
 import br.com.driverapp.racingservice.command.events.RacingRequestedEvent;
+import br.com.driverapp.racingservice.command.events.RacingStartedEvent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,7 +41,7 @@ public class Racing {
     public Racing(RequestRacingCommand requestRacingCommand) {
         LOGGER.info("RacingAggregate -> RequestRacingCommand");
         apply(new RacingRequestedEvent(
-            UUID.randomUUID().toString(),
+            requestRacingCommand.getRacingId(),
             requestRacingCommand.getPassengerId(),
             requestRacingCommand.getStartLocation(),
             requestRacingCommand.getStartLocation(),
@@ -76,6 +77,17 @@ public class Racing {
         LOGGER.info("RacingAggregate -> CancelBillingCommand");
     }
 
+    @CommandHandler
+    public void handle(StartRacingCommand startRacingCommand) {
+        LOGGER.info("RacingAggregate -> StartRacingCommand");
+        if (this.status != RacingStatus.CREATED) {
+            throw new IllegalStateException("The racing must be with status CREATED");
+        }
+        apply(new RacingStartedEvent(
+            startRacingCommand.getRacingId()
+        ));
+    }
+
     @EventSourcingHandler
     public void on(RacingRequestedEvent racingRequestedEvent) {
         LOGGER.info("RacingAggregate -> RacingRequestedEvent");
@@ -96,6 +108,12 @@ public class Racing {
     public void on(RacingCanceledEvent canceledEvent) {
         LOGGER.info("RacingAggregate -> RacingCanceledEvent");
         this.status = canceledEvent.getStatus();
+    }
+
+    @EventSourcingHandler
+    public void on(RacingStartedEvent racingStartedEvent) {
+        LOGGER.info("RacingAggregate -> RacingStartedEvent");
+        this.status = racingStartedEvent.getStatus();
     }
 
 }
