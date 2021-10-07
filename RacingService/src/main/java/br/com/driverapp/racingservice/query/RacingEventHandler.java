@@ -1,10 +1,7 @@
 package br.com.driverapp.racingservice.query;
 
 import br.com.driverapp.racingservice.command.domain.RacingStatus;
-import br.com.driverapp.racingservice.command.events.RacingAcceptedEvent;
-import br.com.driverapp.racingservice.command.events.RacingCanceledEvent;
-import br.com.driverapp.racingservice.command.events.RacingRequestedEvent;
-import br.com.driverapp.racingservice.command.events.RacingStartedEvent;
+import br.com.driverapp.racingservice.command.events.*;
 import br.com.driverapp.racingservice.command.rest.model.RacingModel;
 import br.com.driverapp.racingservice.query.domain.RacingEntity;
 import br.com.driverapp.racingservice.query.domain.RacingsRepository;
@@ -51,36 +48,43 @@ public class RacingEventHandler {
     @EventHandler
     public void on(RacingAcceptedEvent racingAcceptedEvent) {
         LOGGER.info("RacingEventHandler -> RacingAcceptedEvent");
-        Optional<RacingEntity> optionalRacing = racingsRepository.findById(racingAcceptedEvent.getRacingId());
-        if (optionalRacing.isPresent()) {
-            RacingEntity racingEntity = optionalRacing.get();
-            racingEntity.setDriverId(racingAcceptedEvent.getDriverId());
-            racingsRepository.save(racingEntity);
-        }
+        updateRacingDriver(racingAcceptedEvent.getRacingId(), racingAcceptedEvent.getDriverId());
     }
 
     @EventHandler
     public void on(RacingCanceledEvent racingCanceledEvent) {
         LOGGER.info("RacingEventHandler -> RacingCanceledEvent");
-        Optional<RacingEntity> optionalRacing = racingsRepository.findById(racingCanceledEvent.getRacingId());
-        if (optionalRacing.isPresent()) {
-            RacingEntity racingEntity = optionalRacing.get();
-            racingEntity.setStatus(RacingStatus.CANCELED);
-            racingsRepository.save(racingEntity);
-        }
+        updateRacingStatus(racingCanceledEvent.getRacingId(), RacingStatus.CANCELED);
     }
 
     @EventHandler
     public void on(RacingStartedEvent racingStartedEvent) {
         LOGGER.info("RacingEventHandler -> RacingStartedEvent");
-        Optional<RacingEntity> optionalRacing = racingsRepository.findById(racingStartedEvent.getRacingId());
+        updateRacingStatus(racingStartedEvent.getRacingId(), RacingStatus.STARTED);
+    }
+
+    @EventHandler
+    public void on(RacingCompletedEvent racingCompletedEvent) {
+        LOGGER.info("RacingEventHandler -> RacingCompletedEvent");
+        updateRacingStatus(racingCompletedEvent.getRacingId(), RacingStatus.COMPLETED);
+    }
+
+    private void updateRacingStatus(String racingId, RacingStatus racingStatus) {
+        Optional<RacingEntity> optionalRacing = racingsRepository.findById(racingId);
         if (optionalRacing.isPresent()) {
             RacingEntity racingEntity = optionalRacing.get();
-            racingEntity.setStatus(RacingStatus.STARTED);
+            racingEntity.setStatus(racingStatus);
             racingsRepository.save(racingEntity);
         }
     }
 
-
+    private void updateRacingDriver(String racingId, String driverId) {
+        Optional<RacingEntity> optionalRacing = racingsRepository.findById(racingId);
+        if (optionalRacing.isPresent()) {
+            RacingEntity racingEntity = optionalRacing.get();
+            racingEntity.setDriverId(driverId);
+            racingsRepository.save(racingEntity);
+        }
+    }
 
 }

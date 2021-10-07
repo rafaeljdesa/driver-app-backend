@@ -1,13 +1,7 @@
 package br.com.driverapp.racingservice.command.rest;
 
-import br.com.driverapp.racingservice.command.AcceptRacingCommand;
-import br.com.driverapp.racingservice.command.CancelRacingCommand;
-import br.com.driverapp.racingservice.command.RequestRacingCommand;
-import br.com.driverapp.racingservice.command.StartRacingCommand;
-import br.com.driverapp.racingservice.command.rest.model.AcceptRacingModel;
-import br.com.driverapp.racingservice.command.rest.model.CancelRacingModel;
-import br.com.driverapp.racingservice.command.rest.model.RacingModel;
-import br.com.driverapp.racingservice.command.rest.model.StartRacingModel;
+import br.com.driverapp.racingservice.command.*;
+import br.com.driverapp.racingservice.command.rest.model.*;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +49,14 @@ public class RacingController {
                 startRacingModel.getRacingId()
         );
         return sendCommand(startRacingCommand);
+    }
+
+    @PostMapping("/racings/driver/complete")
+    public CompletableFuture<ResponseEntity<Object>> completeRacing(@RequestBody CompleteRacingModel completeRacingModel) {
+        CompleteRacingCommand completeRacingCommand = new CompleteRacingCommand(
+                completeRacingModel.getRacingId()
+        );
+        return sendCommand(completeRacingCommand);
     }
 
     @DeleteMapping("/racings")

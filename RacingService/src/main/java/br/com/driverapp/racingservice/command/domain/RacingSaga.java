@@ -6,6 +6,7 @@ import br.com.driverapp.racingservice.command.events.RacingCanceledEvent;
 import br.com.driverapp.racingservice.command.events.RacingRequestedEvent;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.modelling.saga.SagaEventHandler;
+import org.axonframework.modelling.saga.SagaLifecycle;
 import org.axonframework.modelling.saga.StartSaga;
 import org.axonframework.spring.stereotype.Saga;
 import org.slf4j.Logger;
@@ -28,8 +29,10 @@ public class RacingSaga {
             racingRequestedEvent.getRacingId()
         );
         commandGateway.send(billingCommand);
+        SagaLifecycle.end();
     }
 
+    @StartSaga
     @SagaEventHandler(associationProperty = "racingId")
     public void on(RacingCanceledEvent racingCanceledEvent) {
         LOGGER.info("RacingSaga -> RacingCanceledEvent");
@@ -37,6 +40,7 @@ public class RacingSaga {
             racingCanceledEvent.getRacingId()
         );
         commandGateway.send(cancelBillingCommand);
+        SagaLifecycle.end();
     }
 
 

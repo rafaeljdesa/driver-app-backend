@@ -1,10 +1,7 @@
 package br.com.driverapp.racingservice.command.domain;
 
 import br.com.driverapp.racingservice.command.*;
-import br.com.driverapp.racingservice.command.events.RacingAcceptedEvent;
-import br.com.driverapp.racingservice.command.events.RacingCanceledEvent;
-import br.com.driverapp.racingservice.command.events.RacingRequestedEvent;
-import br.com.driverapp.racingservice.command.events.RacingStartedEvent;
+import br.com.driverapp.racingservice.command.events.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
@@ -88,6 +84,17 @@ public class Racing {
         ));
     }
 
+    @CommandHandler
+    public void handle(CompleteRacingCommand completeRacingCommand) {
+        LOGGER.info("RacingAggregate -> CompleteRacingCommand");
+        if (this.status != RacingStatus.STARTED) {
+            throw new IllegalStateException("The racing must be with status STARTED");
+        }
+        apply(new RacingCompletedEvent(
+            completeRacingCommand.getRacingId()
+        ));
+    }
+
     @EventSourcingHandler
     public void on(RacingRequestedEvent racingRequestedEvent) {
         LOGGER.info("RacingAggregate -> RacingRequestedEvent");
@@ -114,6 +121,12 @@ public class Racing {
     public void on(RacingStartedEvent racingStartedEvent) {
         LOGGER.info("RacingAggregate -> RacingStartedEvent");
         this.status = racingStartedEvent.getStatus();
+    }
+
+    @EventSourcingHandler
+    public void on(RacingCompletedEvent racingCompletedEvent) {
+        LOGGER.info("RacingAggregate -> RacingCompletedEvent");
+        this.status = racingCompletedEvent.getStatus();
     }
 
 }
